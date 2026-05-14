@@ -76,6 +76,10 @@ publications:
 
 # Create uORB::Publication
 subscriptions:
+  # Allow injection RTCM messages
+  - topic: /fmu/in/gps_inject_data
+    type: px4_msgs::msg::GpsInjectData
+
   - topic: /fmu/in/register_ext_component_request
     type: px4_msgs::msg::RegisterExtComponentRequest
 
