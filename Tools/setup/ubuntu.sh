@@ -126,6 +126,19 @@ if [[ $INSTALL_NUTTX == "true" ]]; then
 	echo
 	echo "Installing NuttX dependencies"
 
+	ncurses_packages=(
+		libncurses5
+		libncurses5-dev
+		libncursesw5-dev
+	)
+
+	if [[ "${UBUNTU_RELEASE}" == "24.04" ]]; then
+		ncurses_packages=(
+			libncurses-dev
+			libncurses6
+		)
+	fi
+
 	sudo DEBIAN_FRONTEND=noninteractive apt-get -y --quiet --no-install-recommends install \
 		automake \
 		binutils-dev \
@@ -144,9 +157,7 @@ if [[ $INSTALL_NUTTX == "true" ]]; then
 		libisl-dev \
 		libmpc-dev \
 		libmpfr-dev \
-		libncurses5 \
-		libncurses5-dev \
-		libncursesw5-dev \
+		"${ncurses_packages[@]}" \
 		libtool \
 		pkg-config \
 		screen \
