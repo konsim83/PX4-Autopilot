@@ -2,7 +2,7 @@
 
 set -e
 
-## Bash script to setup PX4 development environment on Ubuntu LTS (22.04, 20.04, 18.04).
+## Bash script to setup PX4 development environment on Ubuntu LTS (24.04, 22.04, 20.04, 18.04).
 ## Can also be used in docker.
 ##
 ## Installs:
@@ -66,6 +66,8 @@ elif [[ "${UBUNTU_RELEASE}" == "20.04" ]]; then
 	echo "Ubuntu 20.04"
 elif [[ "${UBUNTU_RELEASE}" == "22.04" ]]; then
 	echo "Ubuntu 22.04"
+elif [[ "${UBUNTU_RELEASE}" == "24.04" ]]; then
+	echo "Ubuntu 24.04"
 fi
 
 
@@ -107,8 +109,15 @@ if [ -n "$VIRTUAL_ENV" ]; then
 	# virtual environments don't allow --user option
 	python -m pip install -r ${DIR}/requirements.txt
 else
-	# older versions of Ubuntu require --user option
-	python3 -m pip install --user -r ${DIR}/requirements.txt
+	# outside a virtualenv, install into the user site-packages
+	python_pip_args=(--user)
+
+	# Ubuntu 24.04+ marks the system interpreter as externally managed.
+	if [[ "${UBUNTU_RELEASE}" == "24.04" ]]; then
+		python_pip_args+=(--break-system-packages)
+	fi
+
+	python3 -m pip install "${python_pip_args[@]}" -r ${DIR}/requirements.txt
 fi
 
 # NuttX toolchain (arm-none-eabi-gcc)
